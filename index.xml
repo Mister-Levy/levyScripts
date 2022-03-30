@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="ReaPack Repository Template" commit="6605a25901f1c23e411e28ce83d620a16bd3258e">
+<index version="1" name="levyScripts" commit="6605a25901f1c23e411e28ce83d620a16bd3258e">
   <category name="Example">
     <reapack name="cfillion_Hello world.lua" type="script" desc="Hello world">
       <metadata>
