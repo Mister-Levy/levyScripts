@@ -12,4 +12,5 @@
   provides    :
 ]]--
 
--- reaper.ShowConsoleMsg("debugs")
+ctx = reaper.ImGui_CreateContext(script_name)
+create_theme_list_table()

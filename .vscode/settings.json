@@ -4,5 +4,8 @@
     "dfgsljhk",
     "delete_file",
     "open_file"
+  ],
+  "Lua.diagnostics.disable": [
+    "lowercase-global"
   ]
 }

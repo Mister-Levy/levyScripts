@@ -12,4 +12,7 @@
   provides    :
 ]]--
 
--- reaper.ShowConsoleMsg("debugs")
+script_name = 'Theme Editor'
+theme_editor_version = 0.1
+menu_bar_name = "Theme Management"
+new_theme_name = 'New Theme'
