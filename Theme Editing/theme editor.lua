@@ -3,23 +3,23 @@
   description :
   donation    :
   link        :
-  noindex     : true
+  noindex     :
   screenshot  :
   version     : 0.1
   author      : Mister Levy
   changelog   :
   metapackage :
-  provides    :
+  provides    : main table.lua
 ]]--
 
+  win = string.find(reaper.GetOS(), "Win") -- returns 1 if OS is Windows nil if OS is other  -- get folder seperator
+  sep = win and "\\" or "/"
+  info = debug.getinfo(1,'S')
+  script_folder = info.source:match[[^@?(.*[\/])[^\/]-$]]
+  dofile(reaper.GetResourcePath() .. sep .. 'Scripts' .. sep .. 'levyScripts' .. sep .. 'Function Library' .. sep .. 'init.lua')
+--------------------------------------------------------------------------------------------------------------------------------
 
-
-
---hello
-
-
-
-
+dofile(levy_scripts .. 'Theme Editing' .. sep .. 'main table.lua')
 
 --[[
 -- INITIAL VALUES 
@@ -2005,10 +2005,8 @@
 
     function delete_file( path ) 
       if win then 
-        debug_msg('delete_file( path ) (win) ' .. [[ os.execute( 'del /f "]] .. path .. [["' ) ]] )
         os.execute( 'del /f "' .. path .. '"' ) 
       else 
-        debug_msg('delete_file( path ) (macos) ' .. [[ os.execute( 'rm "']] .. path .. [['"' ) ]] )
         os.execute( 'rm "' .. path .. '"' ) 
       end 
     end 

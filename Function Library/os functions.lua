@@ -12,6 +12,9 @@
   provides    :
 ]]--
 
+
+-- r.ShowConsoleMsg("\nos function.lua\n")
+
 function delete_file(path)
   if win then
     debug_msg('delete_file(path) (win) ' .. [[ os.execute('del /f "]] .. path .. [["') ]])
