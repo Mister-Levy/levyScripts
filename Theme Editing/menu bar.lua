@@ -63,7 +63,6 @@ if r.ImGui_BeginMenuBar(ctx) then
     ------------------------------------------------------------------
     rv_modal_text_entry = r.ImGui_MenuItem(ctx, 'New')
     ------------------------------------------------------------------
-    theme_to_delete = false
     if r.ImGui_BeginMenu(ctx , 'Delete') then
       for i = 1 , #theme_list_table['unzipped'] do
         if not string.match(r.GetLastColorThemeFile(), sep .. theme_list_table['unzipped'][i] .. '.') then -- don't give option to delete current theme
