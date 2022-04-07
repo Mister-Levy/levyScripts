@@ -12,7 +12,7 @@
   provides    :
 ]]--
 
-function new_theme()
+function menu_new_theme()
 
   if rv_modal_text_entry then
     response, new_theme_name = modal_text_entry(ctx, "##new_theme", "Please enter a name for your new theme", new_theme_name)
@@ -33,11 +33,20 @@ function new_theme()
 
 end
 
-function delete_theme()
+function menu_delete_theme(theme)
+  if theme_to_delete then
+    response = modal_confirmation(ctx, "WARNING!", 'Are you sure you want to permanently delete this theme?')
+    if response then
+      theme_to_delete = false
+      if response == 1 then
+        delete_theme(theme)
+        create_theme_list_table()
+      end
+    end
+  end
 end
 
-function open_theme()
-
+function open_theme(theme_to_open)
 end
 
 if r.ImGui_BeginMenuBar(ctx) then
@@ -91,6 +100,6 @@ if r.ImGui_BeginMenuBar(ctx) then
 
 end
 
-new_theme()
-delete_theme(theme_to_delete)
+menu_new_theme()
+menu_delete_theme(theme_to_delete)
 open_theme(theme_to_open)
