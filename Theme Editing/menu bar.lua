@@ -55,7 +55,6 @@ function menu_open_theme(theme_to_open)
   end
 end
 
-
 theme_to_open = false
 
 if r.ImGui_BeginMenuBar(ctx) then
@@ -98,9 +97,13 @@ if r.ImGui_BeginMenuBar(ctx) then
       r.ImGui_EndMenu(ctx)
     end
     ------------------------------------------------------------------
-
     r.ImGui_EndMenu(ctx)
   end
+    ------------------------------------------------------------------
+    r.ImGui_TextDisabled( ctx , '  CURRENT THEME:') ; r.ImGui_SameLine( ctx ) 
+    r.ImGui_Text( ctx , string.match( r.GetLastColorThemeFile() , file_from_path ) )
+    if theme_is_zipped() then r.ImGui_SameLine( ctx ) r.ImGui_TextColored( ctx , 0xFF5555FF , ' (zipped)' ) end ; r.ImGui_SameLine( ctx ) 
+    ------------------------------------------------------------------
   r.ImGui_EndMenuBar(ctx)  
 end
 

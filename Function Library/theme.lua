@@ -19,11 +19,7 @@ function theme_is_unzipped()
 end 
 
 function theme_is_zipped()
-  if not r.file_exists(r.GetLastColorThemeFile()) then
-      return true
-  else
-      return false
-  end
+  return string.match(r.GetLastColorThemeFile(), '[Zz][Ii][Pp]$')
 end
 
 function create_theme_list_table()
