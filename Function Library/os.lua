@@ -17,10 +17,8 @@
 
 function delete_file(path)
   if win then
-    debug_msg('delete_file(path) (win) ' .. [[ os.execute('del /f "]] .. path .. [["') ]])
     os.execute('del /f "' .. path .. '"')
   else
-    debug_msg('delete_file(path) (macos) ' .. [[ os.execute('rm "']] .. path .. [['"') ]])
     os.execute('rm "' .. path .. '"')
   end
 end

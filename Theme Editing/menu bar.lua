@@ -19,7 +19,9 @@ function menu_new_theme()
     if response then
       rv_modal_text_entry = nil
       if response == 1 then
-        if not create_new_theme(new_theme_name) then
+        if create_new_theme(new_theme_name) then
+          create_theme_list_table()
+        else
           rv_modal_dialog_message = true
         end
       end
@@ -46,30 +48,33 @@ function menu_delete_theme(theme)
   end
 end
 
-function open_theme(theme_to_open)
+function menu_open_theme(theme_to_open)
+  if theme_to_open then
+    open_theme(theme_to_open)
+    create_theme_list_table()
+  end
 end
+
+
+theme_to_open = false
 
 if r.ImGui_BeginMenuBar(ctx) then
   if r.ImGui_BeginMenu(ctx, menu_bar_name) then
-
-    rv_modal_text_entry = r.ImGui_MenuItem(ctx, 'New Theme')
-
-    if r.ImGui_BeginMenu(ctx , 'Duplicate') then
-      for i = 0 , #theme_list_table['unzipped'] do
-        if i == 0 then
-          if r.ImGui_MenuItem(ctx, string.match(r.GetLastColorThemeFile(), file_from_path)) then
-            theme_to_delete = string.match(r.GetLastColorThemeFile(), file_from_path)
-          end
-          r.ImGui_Separator(ctx)
-        else
-          if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
+    ------------------------------------------------------------------
+    rv_modal_text_entry = r.ImGui_MenuItem(ctx, 'New')
+    ------------------------------------------------------------------
+    theme_to_delete = false
+    if r.ImGui_BeginMenu(ctx , 'Delete') then
+      for i = 1 , #theme_list_table['unzipped'] do
+        if not string.match(r.GetLastColorThemeFile(), sep .. theme_list_table['unzipped'][i] .. '.') then -- don't give option to delete current theme
+          if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then -- list all unzipped themes
             theme_to_delete = theme_list_table['unzipped'][i]
           end
         end
       end
       r.ImGui_EndMenu(ctx)
     end
-
+    ------------------------------------------------------------------
     if r.ImGui_BeginMenu(ctx , 'Open') then
       for i = 0 , #theme_list_table['unzipped'] do
         if i == 0 then
@@ -80,7 +85,7 @@ if r.ImGui_BeginMenuBar(ctx) then
           r.ImGui_TextDisabled(ctx, 'UNZIPPED')
         else
           if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
-            theme_to_open = theme_list_table['unzipped'][i]
+            theme_to_open = theme_list_table['unzipped'][i] .. '.ReaperTheme'
           end
         end
       end
@@ -88,18 +93,18 @@ if r.ImGui_BeginMenuBar(ctx) then
       r.ImGui_TextDisabled(ctx, 'ZIPPED')
       for i = 1 , #theme_list_table['zipped'] do
         if r.ImGui_MenuItem(ctx, theme_list_table['zipped'][i]) then
-          theme_to_open = theme_list_table['zipped'][i]
+          theme_to_open = theme_list_table['zipped'][i] .. '.ReaperThemeZip'
         end
       end
       r.ImGui_EndMenu(ctx)
     end
+    ------------------------------------------------------------------
 
     r.ImGui_EndMenu(ctx)
   end
-  r.ImGui_EndMenuBar(ctx)
-
+  r.ImGui_EndMenuBar(ctx)  
 end
 
 menu_new_theme()
 menu_delete_theme(theme_to_delete)
-open_theme(theme_to_open)
+menu_open_theme(theme_to_open)
