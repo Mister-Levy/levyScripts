@@ -67,7 +67,8 @@ function check_theme_exists(theme_name)
   local i = -1
   repeat
     local theme = r.EnumerateFiles(ColorThemes_path, i)
-    if theme and string.match(theme, theme_name .. theme_file_extension) then
+    if theme and string.match(theme, sep .. theme_name .. theme_file_extension) then
+      match = string.match(theme, theme_name .. theme_file_extension)
       return true
     end
     i = i + 1
@@ -75,18 +76,97 @@ function check_theme_exists(theme_name)
   return nil
 end
 
-function create_new_theme(name)
-  if not check_theme_exists(name) then
-    create_folder(ColorThemes_path .. name)
+function create_new_theme(new_theme_name)
+  if not check_theme_exists(new_theme_name) then
+    create_folder(ColorThemes_path .. new_theme_name)
 
-    file = io.open(ColorThemes_path .. name .. sep .. 'rtconfig.txt' , 'w+')
-    file:write(';ThemeEditorVersion=' .. theme_editor_version)
+    file = io.open(ColorThemes_path .. new_theme_name .. sep .. 'rtconfig.txt' , 'w+')
+    file:write( ';[THEME_EDITOR]' ..
+                '\n name=' .. new_theme_name ..
+                '\n version=' .. theme_editor_version)
+    -- Globals
+
+      file:write(
+        '\n;[GLOBALS]\n' ..
+        ' version 6.0\n' ..
+        ' use_pngs 1\n' ..
+        ' use_overlays 1\n' ..
+        ' tinttcp 298\n' ..
+        ' peaksedges 0\n' ..
+        ' no_meter_reclbl 1\n' ..
+        ' envcp_min_height 29\n' ..
+        ' gen_vol_zeroline FF000000\n' ..
+        ' gen_pan_zeroline FF000000\n' ..
+        ' item_volknobfg 85000000 FF778485 00474F4F\n' ..
+        ' mcp_showborders 0\n' ..
+        ' mcp_vupeakheight 2\n' ..
+        ' mcp_mastervupeakheight 4\n' ..
+        ' mcp_altmeterpos 0\n' ..
+        ' mcp_vol_zeroline FF666666\n' ..
+        ' mcp_pan_zeroline 85000000\n' ..
+        ' mcp_min_height 240\n' ..
+        ' mcp_voltext_flags 5 5\n' ..
+        ' tcp_showborders 0\n' ..
+        ' tcp_vupeakwidth 2\n' ..
+        ' tcp_vol_zeroline FF666666\n' ..
+        ' tcp_pan_zeroline 66000000\n' ..
+        ' tcp_master_minheight 56\n' ..
+        ' tcp_voltext_flags 12\n' ..
+        ' tcp_heights 4 25 50 64  ; supercollapsed, collapsed, small(norecarm), recarm size\n' ..
+        ' tcp_heights 1 31 50 64   ; supercollapsed, collapsed, small(norecarm), recarm size\n' ..
+        ' tcp_folderindent 0\n' ..
+        ' trans_speed_zeroline 85000000\n' ..
+        ' transport_showborders 0\n' ..
+        ' misc_dpi_translate 134 150\n' ..
+        ' misc_dpi_translate 174 200\n\n' )
+
+    -- Define Parameters
+
+      file:write( ';[DEFINED_PARAMETERS]\n' )
+        for i = 0, 3000 do             -- name             desc            def       min        max
+          file:write(' define_parameter ' .. string.gsub( new_theme_name , ' ' , '_' ) .. '_' .. i .. ' desc_' .. i .. ' 0' .. ' -9999' .. ' 9999\n' )
+        end
+      file:write( '\n' )
+
+    -- Macros
+
+      file:write( ';[MACROS]\n' )
+      file:write( ' set selected + ?track_selected 1 0\n' ..
+                  ' set armed    + ?recarm 2 0\n' .. 
+                  ' set mixer    + ?mixer_visible 4 0\n' ..
+                  ' set state    + + selected armed mixer\n' )
+
+    -- Colours
+
+      file:write( ';[COLOUR_PRESETS]\n' ) 
+      file:write( ' set track_color     [ 000 000 000 255 ]\n' ..
+                  ' set black_and_white [ 000 000 000 255 ]\n' ..
+                  ' set black           [ 000 000 000 255 ]\n' ..
+                  ' set white           [ 255 255 255 255 ]\n' ..
+                  ' set red             [ 255 000 000 255 ]\n' ..
+                  ' set purple          [ 255 000 255 255 ]\n' ..
+                  ' set blue            [ 000 000 255 255 ]\n' ..
+                  ' set green           [ 000 255 000 255 ]\n' ..
+                  ' set yellow          [ 255 255 000 255 ]\n' ..
+                  ' set orange          [ 255 128 000 255 ]\n' )
+
+    -- Default Layout
+
+      file:write( ';[DEFAULT_LAYOUT]\n' )
+
+    -- Other Layouts
+
+      file:write( ';[OTHER_LAYOUTs]\n' )
+
+
+
+
     file:close()
 
-    file = io.open(ColorThemes_path .. name .. '.ReaperTheme' , 'w+')
+    file = io.open(ColorThemes_path .. new_theme_name .. '.ReaperTheme' , 'w+')
     file:write('[color theme]\n' ..
       '[REAPER]\n' ..
-      'ui_img=' .. name)
+      'ui_img=' .. new_theme_name)
     file:close()
     return true
   else
