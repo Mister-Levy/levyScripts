@@ -30,8 +30,10 @@ function create_theme_list_table()
     if theme and string.match(theme, theme_file_extension) then
       if theme:match('[Zz][Ii][Pp]$') then
         type_of_file = 'zipped'
+        if not theme:match('.ReaperThemeZip') then rename_file(ColorThemes_path .. theme, ColorThemes_path .. string.gsub(theme, theme_file_extension, "") .. '.ReaperThemeZip') end
       else
         type_of_file = 'unzipped'
+        if not theme:match('.ReaperTheme') then rename_file(ColorThemes_path .. theme, ColorThemes_path .. string.gsub(theme, theme_file_extension, "") .. '.ReaperTheme') end
       end
         theme = string.gsub(theme, theme_file_extension, "")
         table.insert(theme_list_table[type_of_file], theme)
