@@ -14,23 +14,23 @@
 
 function menu_new_theme()
 
-  if rv_modal_text_entry then
+  if rv_new_theme then
     response, new_theme_name = modal_text_entry(ctx, "##new_theme", "Please enter a name for your new theme", new_theme_name)
     if response then
-      rv_modal_text_entry = nil
+      rv_new_theme = nil
       if response == 1 then
         if create_new_theme(new_theme_name) then
           create_theme_list_table()
         else
-          rv_modal_dialog_message = true
+          rv_new_theme_warning = true
         end
       end
     end
   end
 
-  if rv_modal_dialog_message then
+  if rv_new_theme_warning then
     response = modal_dialog_message(ctx, 'SORRY', 'A theme with the name "' .. new_theme_name .. '" already exists.\n\nPlease choose a new name for your theme')
-    if response then rv_modal_dialog_message = nil rv_modal_text_entry = true end
+    if response then rv_new_theme_warning = nil rv_new_theme = true end
   end
 
 end
@@ -55,42 +55,77 @@ function menu_open_theme(theme_to_open)
   end
 end
 
+function menu_duplicate_theme(theme_to_duplicate)
+  if rv_duplicate_theme then
+    response, duplicate_theme_name = modal_text_entry(ctx, "##new_theme", "Please enter a name for your new theme", duplicate_theme_name)
+    if response then
+      rv_duplicate_theme = nil
+      if response == 1 then
+        if duplicate_theme(theme_to_duplicate , duplicate_theme_name) then
+          refresh_theme()
+          create_theme_list_table()
+        else
+          rv_duplicate_theme_warning = true
+        end
+      end
+    end
+  end
+
+  if rv_duplicate_theme_warning then
+    response = modal_dialog_message(ctx, 'SORRY', 'A theme with the name "' .. duplicate_theme_name .. '" already exists.\n\nPlease choose a new name for your theme')
+    if response then rv_duplicate_theme_warning = nil rv_duplicate_theme = true end
+  end
+end
+
 theme_to_open = false
 
 if r.ImGui_BeginMenuBar(ctx) then
   if r.ImGui_BeginMenu(ctx, menu_bar_name) then
     ------------------------------------------------------------------
-    rv_modal_text_entry = r.ImGui_MenuItem(ctx, 'New')
+    rv_new_theme = r.ImGui_MenuItem(ctx, 'New')
     ------------------------------------------------------------------
-    if r.ImGui_BeginMenu(ctx , 'Delete') then
+    if r.ImGui_BeginMenu(ctx , 'Duplicate') then
+      if r.ImGui_MenuItem(ctx, string.match(r.GetLastColorThemeFile(), file_from_path)) then -- list all unzipped themes
+        theme_to_duplicate = string.match(r.GetLastColorThemeFile(), file_from_path)
+        duplicate_theme_name = theme_to_duplicate .. ' (copy)'
+        rv_duplicate_theme = true
+      end
+      r.ImGui_Separator(ctx)
       for i = 1 , #theme_list_table['unzipped'] do
-        if not string.match(r.GetLastColorThemeFile(), sep .. theme_list_table['unzipped'][i] .. '.') then -- don't give option to delete current theme
+        if not string.match(r.GetLastColorThemeFile(), sep .. theme_list_table['unzipped'][i] .. theme_file_extension) then -- don't give option to duplicate current theme
           if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then -- list all unzipped themes
-            theme_to_delete = theme_list_table['unzipped'][i]
+            theme_to_duplicate = theme_list_table['unzipped'][i]
+            duplicate_theme_name = theme_to_duplicate .. ' (copy)'
+            rv_duplicate_theme = true
           end
         end
       end
       r.ImGui_EndMenu(ctx)
     end
     ------------------------------------------------------------------
+    if r.ImGui_BeginMenu(ctx , 'Delete') then
+      for i = 1 , #theme_list_table['unzipped'] do
+        if theme_list_table['unzipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then -- don't give option to delete current theme
+        elseif r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then -- list all unzipped themes
+          theme_to_delete = theme_list_table['unzipped'][i]
+        end
+      end
+      r.ImGui_EndMenu(ctx)
+    end
+    ------------------------------------------------------------------
     if r.ImGui_BeginMenu(ctx , 'Open') then
-      for i = 0 , #theme_list_table['unzipped'] do
-        if i == 0 then
-          if r.ImGui_MenuItem(ctx, string.match(r.GetLastColorThemeFile(), file_from_path)) then
-            theme_to_open = string.match(r.GetLastColorThemeFile(), file_from_path)
-          end
-          r.ImGui_Separator(ctx)
-          r.ImGui_TextDisabled(ctx, 'UNZIPPED')
-        else
-          if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
-            theme_to_open = theme_list_table['unzipped'][i] .. '.ReaperTheme'
-          end
+      r.ImGui_TextDisabled(ctx, 'UNZIPPED')
+      for i = 1 , #theme_list_table['unzipped'] do
+        if theme_list_table['unzipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then
+        elseif r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
+          theme_to_open = theme_list_table['unzipped'][i] .. '.ReaperTheme'
         end
       end
       r.ImGui_Separator(ctx)
       r.ImGui_TextDisabled(ctx, 'ZIPPED')
       for i = 1 , #theme_list_table['zipped'] do
-        if r.ImGui_MenuItem(ctx, theme_list_table['zipped'][i]) then
+        if theme_list_table['zipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then
+        elseif r.ImGui_MenuItem(ctx, theme_list_table['zipped'][i]) and not string.match(r.GetLastColorThemeFile(), theme_list_table['zipped'][i] .. theme_file_extension) then
           theme_to_open = theme_list_table['zipped'][i] .. '.ReaperThemeZip'
         end
       end
@@ -100,9 +135,9 @@ if r.ImGui_BeginMenuBar(ctx) then
     r.ImGui_EndMenu(ctx)
   end
     ------------------------------------------------------------------
-    r.ImGui_TextDisabled( ctx , '  CURRENT THEME:') ; r.ImGui_SameLine( ctx ) 
-    r.ImGui_Text( ctx , string.match( r.GetLastColorThemeFile() , file_from_path ) )
-    if theme_is_zipped() then r.ImGui_SameLine( ctx ) r.ImGui_TextColored( ctx , 0xFF5555FF , ' (zipped)' ) end ; r.ImGui_SameLine( ctx ) 
+    r.ImGui_TextDisabled(ctx, '  CURRENT THEME:') ; r.ImGui_SameLine(ctx)
+    r.ImGui_Text(ctx, string.match(r.GetLastColorThemeFile(), file_from_path))
+    if theme_is_zipped() then r.ImGui_SameLine(ctx) r.ImGui_TextColored(ctx, 0xFF5555FF, ' (zipped)') end ; r.ImGui_SameLine(ctx)
     ------------------------------------------------------------------
   r.ImGui_EndMenuBar(ctx)  
 end
@@ -110,3 +145,4 @@ end
 menu_new_theme()
 menu_delete_theme(theme_to_delete)
 menu_open_theme(theme_to_open)
+menu_duplicate_theme(theme_to_duplicate)

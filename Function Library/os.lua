@@ -12,7 +12,6 @@
   provides    :
 ]]--
 
-
 -- r.ShowConsoleMsg("\nos function.lua\n")
 
 function delete_file(path)

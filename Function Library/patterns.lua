@@ -32,4 +32,3 @@ pattern_15  = "current_edit_element$"
 file_from_path = "([^" .. sep .. "]+)%.%w*$"                                              -- eg. 'Reaper/ColorThemes/Theme Name.ReaperTheme' = 'Theme Name'
 file_from_path_with_extension = "([^" .. sep .. "]+%.%w*)$"                               -- eg. 'Reaper/ColorThemes/Theme Name.ReaperTheme' = 'Theme Name.ReaperTheme'
 theme_file_extension = '.[Rr][Ee][Aa][Pp][Ee][Rr][Tt][Hh][Ee][Mm][Ee][Zz]*[Ii]*[Pp]*$'    -- eg. 'Reaper/ColorThemes/Theme Name.ReaperTheme' = '.ReaperTheme' or 'Reaper/ColorThemes/Theme Name.ReaperThemeZip' = '.ReaperThemeZip' 
-

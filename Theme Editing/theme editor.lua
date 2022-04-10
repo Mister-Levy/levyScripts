@@ -15,6 +15,7 @@
                 management.lua
 ]]--
   debug_script = true
+  reaper.ClearConsole()
   win = string.find(reaper.GetOS(), "Win") -- returns 1 if OS is Windows nil if OS is other  -- get folder seperator
   sep = win and "\\" or "/"
   info = debug.getinfo(1,'S')

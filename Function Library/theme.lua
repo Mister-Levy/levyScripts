@@ -41,10 +41,10 @@ function create_theme_list_table()
   return theme_list_table
 end
 
-function delete_theme(name) 
-  local theme_file_delete_path = string.gsub(r.GetLastColorThemeFile(), file_from_path, name)
-  delete_folder(get_theme_folder_path(name))
-  delete_file(theme_file_delete_path .. '.ReaperTheme')
+function delete_theme(theme_name)
+  local theme_file_delete_path = string.gsub(r.GetLastColorThemeFile(), file_from_path, theme_name .. '.ReaperTheme')
+  delete_folder(get_theme_folder_path(theme_name))
+  delete_file(theme_file_delete_path)
 end
 
 function get_theme_folder_name(theme_name) -- Returns the name of the theme folder
@@ -56,8 +56,8 @@ function get_theme_folder_name(theme_name) -- Returns the name of the theme fold
   return theme_folder_name
 end
 
-function get_theme_folder_path(name)   -- Returns full theme folder path
-  theme_folder_path = get_theme_folder_name(name)
+function get_theme_folder_path(theme_name)   -- Returns full theme folder path
+  theme_folder_path = get_theme_folder_name(theme_name)
   return string.gsub(r.GetLastColorThemeFile(), file_from_path_with_extension, theme_folder_path)
 end
 
@@ -65,7 +65,7 @@ function check_theme_exists(theme_name)
   local i = -1
   repeat
     local theme = r.EnumerateFiles(ColorThemes_path, i)
-    if theme and string.match(theme, sep .. theme_name .. '.') then
+    if theme and string.match(theme, theme_name .. theme_file_extension) then
       return true
     end
     i = i + 1
@@ -83,8 +83,8 @@ function create_new_theme(name)
 
     file = io.open(ColorThemes_path .. name .. '.ReaperTheme' , 'w+')
     file:write('[color theme]\n' ..
-              '[REAPER]\n' ..
-              'ui_img=' .. name)
+      '[REAPER]\n' ..
+      'ui_img=' .. name)
     file:close()
     return true
   else
@@ -97,3 +97,49 @@ function open_theme(theme_file)
   r.UpdateArrange()
   r.UpdateTimeline()
 end
+
+function duplicate_theme(original_theme_name , duplicate_theme_name)
+  if not check_theme_exists(duplicate_theme_name) then
+    local new_theme_file_path = string.gsub(r.GetLastColorThemeFile(), file_from_path, duplicate_theme_name .. '.ReaperTheme')
+    local old_theme_file_path = string.gsub(r.GetLastColorThemeFile(), file_from_path, original_theme_name .. '.ReaperTheme')
+    copy_file(string.gsub(r.GetLastColorThemeFile(), file_from_path, original_theme_name .. '.ReaperTheme'), new_theme_file_path)
+    local new_theme_folder_path = r.GetResourcePath() .. sep .. 'ColorThemes' .. sep .. duplicate_theme_name
+    local old_theme_folder_path = get_theme_folder_path(original_theme_name)
+    copy_folder(old_theme_folder_path, new_theme_folder_path)
+    r.OpenColorThemeFile(new_theme_file_path) -- Open new theme
+    set_theme_file_value(r.GetLastColorThemeFile(), "ui_img", duplicate_theme_name)
+    return true
+  else
+    return nil
+  end
+end
+
+function set_theme_file_value(theme_file_path, index, new_value)
+  local file = io.open(theme_file_path, "r") --Reading.
+  local lines = {}
+  local rest_of_file
+  local line_count = 1
+  for line in file:lines() do
+    if string.sub(line, 1, string.len(index)) == index then --Is this the line to modify?
+      lines[#lines + 1] = index .. '=' .. new_value --Change old line into new line.
+      rest_of_file = file:read("*a")
+      break
+    else
+        line_count = line_count + 1
+        lines[#lines + 1] = line
+    end
+  end
+  file:close()
+  file = io.open(theme_file_path , "w") --write the file.
+  for i, line in ipairs(lines) do
+    file:write(line, "\n")
+  end
+  file:write(rest_of_file)
+  file:close()
+end
+
+function refresh_theme()
+  r.OpenColorThemeFile( r.GetLastColorThemeFile() )
+  r.UpdateArrange()
+  r.UpdateTimeline()
+end 

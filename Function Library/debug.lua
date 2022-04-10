@@ -13,3 +13,7 @@
 ]]--
 
 -- reaper.ShowConsoleMsg("debugs")
+
+function pause()
+  r.ShowMessageBox('Click "OK" to continue', "PAUSE", 0)
+end
