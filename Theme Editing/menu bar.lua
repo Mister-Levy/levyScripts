@@ -84,6 +84,25 @@ if r.ImGui_BeginMenuBar(ctx) then
     ------------------------------------------------------------------
     rv_new_theme = r.ImGui_MenuItem(ctx, 'New')
     ------------------------------------------------------------------
+    if r.ImGui_BeginMenu(ctx , 'Open') then
+      r.ImGui_TextDisabled(ctx, 'UNZIPPED')
+      for i = 1 , #theme_list_table['unzipped'] do
+        if theme_list_table['unzipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then
+        elseif r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
+          theme_to_open = theme_list_table['unzipped'][i] .. '.ReaperTheme'
+        end
+      end
+      r.ImGui_Separator(ctx)
+      r.ImGui_TextDisabled(ctx, 'ZIPPED')
+      for i = 1 , #theme_list_table['zipped'] do
+        if theme_list_table['zipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then
+        elseif r.ImGui_MenuItem(ctx, theme_list_table['zipped'][i]) and not string.match(r.GetLastColorThemeFile(), theme_list_table['zipped'][i] .. theme_file_extension) then
+          theme_to_open = theme_list_table['zipped'][i] .. '.ReaperThemeZip'
+        end
+      end
+      r.ImGui_EndMenu(ctx)
+    end
+    ------------------------------------------------------------------
     if r.ImGui_BeginMenu(ctx , 'Duplicate') then
       if r.ImGui_MenuItem(ctx, string.match(r.GetLastColorThemeFile(), file_from_path)) then -- list all unzipped themes
         theme_to_duplicate = string.match(r.GetLastColorThemeFile(), file_from_path)
@@ -113,25 +132,7 @@ if r.ImGui_BeginMenuBar(ctx) then
       r.ImGui_EndMenu(ctx)
     end
     ------------------------------------------------------------------
-    if r.ImGui_BeginMenu(ctx , 'Open') then
-      r.ImGui_TextDisabled(ctx, 'UNZIPPED')
-      for i = 1 , #theme_list_table['unzipped'] do
-        if theme_list_table['unzipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then
-        elseif r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
-          theme_to_open = theme_list_table['unzipped'][i] .. '.ReaperTheme'
-        end
-      end
-      r.ImGui_Separator(ctx)
-      r.ImGui_TextDisabled(ctx, 'ZIPPED')
-      for i = 1 , #theme_list_table['zipped'] do
-        if theme_list_table['zipped'][i] == string.match(r.GetLastColorThemeFile(), file_from_path) then
-        elseif r.ImGui_MenuItem(ctx, theme_list_table['zipped'][i]) and not string.match(r.GetLastColorThemeFile(), theme_list_table['zipped'][i] .. theme_file_extension) then
-          theme_to_open = theme_list_table['zipped'][i] .. '.ReaperThemeZip'
-        end
-      end
-      r.ImGui_EndMenu(ctx)
-    end
-    ------------------------------------------------------------------
+
     r.ImGui_EndMenu(ctx)
   end
     ------------------------------------------------------------------
