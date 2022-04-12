@@ -136,7 +136,7 @@ function create_new_theme(new_theme_name)
                   ' set mixer    + ?mixer_visible 4 0\n' ..
                   ' set state    + + selected armed mixer\n' )
 
-    -- Colours
+    -- Colour Presets
 
       file:write( ';[COLOUR_PRESETS]\n' ) 
       file:write( ' set track_color     [ 000 000 000 255 ]\n' ..
@@ -196,7 +196,7 @@ function duplicate_theme(original_theme_name , duplicate_theme_name)
   end
 end
 
-function set_theme_file_value(theme_file_path, index, new_value)
+function set_theme_file_value(theme_file_path, section, index, new_value)
   local file = io.open(theme_file_path, "r") --Reading.
   local lines = {}
   local rest_of_file
@@ -216,7 +216,60 @@ function set_theme_file_value(theme_file_path, index, new_value)
   for i, line in ipairs(lines) do
     file:write(line, "\n")
   end
-  file:write(rest_of_file)
+  if rest_of_file then file:write(rest_of_file) end
+  file:close()
+end
+
+function set_rtconfig_value(rtconfig_path, section, index, new_value)
+  local file = io.open(rtconfig_path, "r") --Reading.
+  local lines = {}
+  local rest_of_file
+  local line_count = 1
+  local write = nil
+  for line in file:lines() do
+    if string.find(line, ';%[' .. section .. '%]') then write = true end
+    if write and string.find(line, index) then --Is this the line to modify?
+      lines[#lines + 1] = index .. new_value --Change old line into new line.
+      rest_of_file = file:read("*a")
+      break
+    else
+        line_count = line_count + 1
+        lines[#lines + 1] = line
+    end
+  end
+  file:close()
+  file = io.open(rtconfig_path , "w") --write the file.
+  for i, line in ipairs(lines) do
+    file:write(line, "\n")
+  end
+  if rest_of_file then file:write(rest_of_file) end
+  file:close()
+end
+
+function insert_rtconfig_value(rtconfig_path, section, new_line)
+  r.ShowConsoleMsg(section .. '\n')
+  local file = io.open(rtconfig_path, "r") --Reading.
+  local lines = {}
+  local rest_of_file
+  local line_count = 1
+  for line in file:lines() do
+    if string.find(line, ';%[' .. section .. '%]') == 1 then --Is this the line to modify?
+      lines[#lines + 1] = line --Change old line into new line.
+      lines[#lines + 1] = new_line
+      rest_of_file = file:read("*a")
+      break
+    else
+      r.ShowConsoleMsg(line .. ' = ' .. ';[' .. section .. ']' .. tostring(string.match(tostring(line), ';[' .. section .. ']')) .. '\n')
+        line_count = line_count + 1
+        lines[#lines + 1] = line
+    end
+  end
+  file:close()
+  file = io.open(rtconfig_path , "w") --write the file.
+  for i, line in ipairs(lines) do
+    file:write(line, "\n")
+  end
+  if rest_of_file then file:write(rest_of_file) end
   file:close()
 end
 
@@ -224,4 +277,4 @@ function refresh_theme()
   r.OpenColorThemeFile( r.GetLastColorThemeFile() )
   r.UpdateArrange()
   r.UpdateTimeline()
-end 
+end

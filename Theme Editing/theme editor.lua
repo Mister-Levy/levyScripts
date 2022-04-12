@@ -48,4 +48,7 @@ function loop()
 
 end
 
+-- insert_rtconfig_value("C:\\Users\\damia\\Dropbox\\Reaper\\ColorThemes\\a\\rtconfig.txt", 'COLOUR_PRESETS', " hello 123")
+set_rtconfig_value("C:\\Users\\damia\\Dropbox\\Reaper\\ColorThemes\\a\\rtconfig.txt", 'COLOUR_PRESETS', "hello", "321")
+
 loop()
