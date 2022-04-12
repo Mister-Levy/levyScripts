@@ -276,13 +276,3 @@ function refresh_theme()
   r.UpdateArrange()
   r.UpdateTimeline()
 end
-
-function read_rtconfig_to_table(rtconfig_path)
-  local rtconfig_table = {}
-  local file = io.open(rtconfig_path, "r") --Reading.
-  for line in file:lines() do
-    rtconfig_table[#rtconfig_table + 1] = line
-  end
-  file:close()
-  return rtconfig_table
-end

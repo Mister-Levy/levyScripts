@@ -67,3 +67,13 @@ end
 function rename_file(old_file_path, new_file_path)
     os.rename (old_file_path, new_file_path)
 end
+
+function read_file_to_table(file_path)
+  local file_table = {}
+  local file = io.open(file_path, "r") --Reading.
+  for line in file:lines() do
+    file_table[#file_table + 1] = line
+  end
+  file:close()
+  return file_table
+end
