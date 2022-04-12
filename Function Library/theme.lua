@@ -247,7 +247,6 @@ function set_rtconfig_value(rtconfig_path, section, index, new_value)
 end
 
 function insert_rtconfig_value(rtconfig_path, section, new_line)
-  r.ShowConsoleMsg(section .. '\n')
   local file = io.open(rtconfig_path, "r") --Reading.
   local lines = {}
   local rest_of_file
@@ -259,7 +258,6 @@ function insert_rtconfig_value(rtconfig_path, section, new_line)
       rest_of_file = file:read("*a")
       break
     else
-      r.ShowConsoleMsg(line .. ' = ' .. ';[' .. section .. ']' .. tostring(string.match(tostring(line), ';[' .. section .. ']')) .. '\n')
         line_count = line_count + 1
         lines[#lines + 1] = line
     end
@@ -277,4 +275,14 @@ function refresh_theme()
   r.OpenColorThemeFile( r.GetLastColorThemeFile() )
   r.UpdateArrange()
   r.UpdateTimeline()
+end
+
+function read_rtconfig_to_table(rtconfig_path)
+  local rtconfig_table = {}
+  local file = io.open(rtconfig_path, "r") --Reading.
+  for line in file:lines() do
+        rtconfig_table[#rtconfig_table + 1] = line
+    end
+  end
+  file:close()
 end

@@ -13,6 +13,7 @@
                 config.lua
                 init.lua
                 management.lua
+                color presets.lua
 ]]--
   debug_script = true
   reaper.ClearConsole()
@@ -27,7 +28,6 @@ dofile(script_folder .. 'main table.lua')
 dofile(script_folder .. 'config.lua')
 dofile(script_folder .. 'init.lua')
 dofile(script_folder .. 'management.lua')
--- dofile(script_folder .. 'menu bar.lua')
 
 function loop()
 
@@ -47,8 +47,5 @@ function loop()
   end
 
 end
-
--- insert_rtconfig_value("C:\\Users\\damia\\Dropbox\\Reaper\\ColorThemes\\a\\rtconfig.txt", 'COLOUR_PRESETS', " hello 123")
-set_rtconfig_value("C:\\Users\\damia\\Dropbox\\Reaper\\ColorThemes\\a\\rtconfig.txt", 'COLOUR_PRESETS', "hello", "321")
 
 loop()
