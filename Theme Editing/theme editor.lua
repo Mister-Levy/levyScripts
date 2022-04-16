@@ -36,6 +36,7 @@ function loop()
   if visible then
 
     dofile(script_folder .. 'menu bar.lua')
+    dofile(script_folder .. 'tab bar.lua')
 
     r.ImGui_End(ctx)
   end

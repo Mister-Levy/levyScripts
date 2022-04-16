@@ -168,13 +168,14 @@ if r.ImGui_BeginMenuBar(ctx) then
         end
         r.ImGui_EndMenu( ctx ) 
       end
+      ------------------------------------------------------------------
+      if r.ImGui_MenuItem( ctx, 'Function Test') then
+        -- PUT THE FUNCTION YOU WANT TO TEST HERE
+        -- create_theme_list_table()
+      end
+      ------------------------------------------------------------------
+      r.ImGui_EndMenu(ctx)
     end
-    ------------------------------------------------------------------
-    if r.ImGui_MenuItem( ctx, 'Function Test') then
-      -- PUT THE FUNCTION YOU WANT TO TEST HERE
-      -- create_theme_list_table()
-    end
-    r.ImGui_EndMenu(ctx)
     ------------------------------------------------------------------
   end
     ------------------------------------------------------------------

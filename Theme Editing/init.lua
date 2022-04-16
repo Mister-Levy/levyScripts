@@ -37,3 +37,4 @@ for panel = 1, #panels_table do
     combo_list_elements[panels_table[panel]] = combo_list_elements[panels_table[panel]] .. elements_table[panels_table[panel]][element] .. '\31'
   end
 end
+selected_elements_table = {}
