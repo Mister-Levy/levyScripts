@@ -132,8 +132,50 @@ if r.ImGui_BeginMenuBar(ctx) then
       r.ImGui_EndMenu(ctx)
     end
     ------------------------------------------------------------------
-
+    if develop_mode then -- turn on/off in config.lua file
+      ------------------------------------------------------------------
+      r.ImGui_Separator(ctx)
+      if r.ImGui_BeginMenu(ctx, 'rtconfig Files') then
+        for i = 0, #theme_list_table['unzipped'] do
+          if i == 0 then
+            if r.ImGui_MenuItem(ctx, string.match(r.GetLastColorThemeFile(), pattern_12)) then
+              local folder      = string.match(get_theme_folder_path(string.match(r.GetLastColorThemeFile(), pattern_12)), pattern_1)
+              local folder_path = string.gsub(r.GetLastColorThemeFile(), pattern_1, folder )
+              open_file(folder_path .. sep .. "rtconfig.txt")
+            end
+            r.ImGui_Separator(ctx)
+          else
+            if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then
+              open_file(get_theme_folder_path(theme_list_table['unzipped'][i]) .. sep .. "rtconfig.txt")
+            end
+          end
+        end
+        r.ImGui_EndMenu(ctx)
+      end
+      ------------------------------------------------------------------
+      if r.ImGui_BeginMenu( ctx , 'Theme Files' ) then
+        for i = 0, #theme_list_table['unzipped'] do
+          if i == 0 then
+            if r.ImGui_MenuItem(ctx, string.match(r.GetLastColorThemeFile(), pattern_12)) then
+              open_file(r.GetLastColorThemeFile())
+            end
+            r.ImGui_Separator(ctx)
+          else
+            if r.ImGui_MenuItem(ctx, theme_list_table['unzipped'][i]) then 
+              open_file(r.GetResourcePath() .. sep .. 'ColorThemes' .. sep .. theme_list_table['unzipped'][i] .. ".ReaperTheme" )
+            end
+          end
+        end
+        r.ImGui_EndMenu( ctx ) 
+      end
+    end
+    ------------------------------------------------------------------
+    if r.ImGui_MenuItem( ctx, 'Function Test') then
+      -- PUT THE FUNCTION YOU WANT TO TEST HERE
+      -- create_theme_list_table()
+    end
     r.ImGui_EndMenu(ctx)
+    ------------------------------------------------------------------
   end
     ------------------------------------------------------------------
     r.ImGui_TextDisabled(ctx, '  CURRENT THEME:') ; r.ImGui_SameLine(ctx)

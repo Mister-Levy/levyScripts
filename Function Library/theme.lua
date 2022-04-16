@@ -28,8 +28,8 @@ function create_theme_list_table()
   local i = -1
   repeat
     local theme = r.EnumerateFiles(ColorThemes_path, i)
-    if theme and string.match(theme, theme_file_extension) then
-      if theme:match('[Zz][Ii][Pp]$') then
+    if theme and string.match(theme, theme_file_extension) then -- check if file is a theme file
+      if theme:match('[Zz][Ii][Pp]$') then -- check if file is zipped
         type_of_file = 'zipped'
         if not theme:match('.ReaperThemeZip') then rename_file(ColorThemes_path .. theme, ColorThemes_path .. string.gsub(theme, theme_file_extension, "") .. '.ReaperThemeZip') end
       else
