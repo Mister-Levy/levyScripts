@@ -31,7 +31,7 @@ dofile(script_folder .. 'management.lua')
 
 function loop()
 
-  local visible , open = r.ImGui_Begin( ctx , "Theme Editor" , true , r.ImGui_WindowFlags_NoCollapse() | r.ImGui_WindowFlags_MenuBar() )
+  local visible , open = r.ImGui_Begin(ctx, "Theme Editor", true, r.ImGui_WindowFlags_NoCollapse() | r.ImGui_WindowFlags_MenuBar())
 
   if visible then
 

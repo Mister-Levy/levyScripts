@@ -14,6 +14,7 @@
 
 ctx = reaper.ImGui_CreateContext(script_name)
 create_theme_list_table()
+read_rtconfig_values_to_table(string.match(r.GetLastColorThemeFile(), file_from_path))
 
 panels_table = {}
 elements_table = {}

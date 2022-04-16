@@ -13,6 +13,7 @@
 ]]--
 
 ColorThemes_path = reaper.GetResourcePath() .. sep .. "ColorThemes" .. sep
+rtconfig_values_table = {}
 
 function theme_is_unzipped()
   return r.file_exists(r.GetLastColorThemeFile())
@@ -138,7 +139,7 @@ function create_new_theme(new_theme_name)
 
     -- Colour Presets
 
-      file:write( ';[COLOUR_PRESETS]\n' ) 
+      file:write( ';[COLOR_PRESETS]\n' ) 
       file:write( ' set track_color     [ 000 000 000 255 ]\n' ..
                   ' set black_and_white [ 000 000 000 255 ]\n' ..
                   ' set black           [ 000 000 000 255 ]\n' ..
@@ -156,7 +157,7 @@ function create_new_theme(new_theme_name)
 
     -- Other Layouts
 
-      file:write( ';[OTHER_LAYOUTs]\n' )
+      file:write( ';[OTHER_LAYOUTS]\n' )
 
 
 
@@ -252,7 +253,7 @@ function insert_rtconfig_value(rtconfig_path, section, new_line)
   local rest_of_file
   local line_count = 1
   for line in file:lines() do
-    if string.find(line, ';%[' .. section .. '%]') == 1 then --Is this the line to modify?
+    if string.find(line, ';%[' .. section .. '%]') then --Is this the line to modify?
       lines[#lines + 1] = line --Change old line into new line.
       lines[#lines + 1] = new_line
       rest_of_file = file:read("*a")
@@ -275,4 +276,23 @@ function refresh_theme()
   r.OpenColorThemeFile( r.GetLastColorThemeFile() )
   r.UpdateArrange()
   r.UpdateTimeline()
+end
+
+function read_rtconfig_values_to_table(theme_name)
+  -- r.ShowConsoleMsg(string.format( '%-50s' , 'theme_name' ) .. '= ' .. tostring(theme_name) .. '\n') ; pause()
+  local file = io.open(get_theme_folder_path(theme_name) .. sep .. 'rtconfig.txt', "r") --Reading.
+  rtconfig_values_table[theme_name] = {}
+  for line in file:lines() do
+    if section == 'COLOR_PRESETS' and not line:match(';%[DEFAULT_LAYOUT%]') then
+      preset_values = {}
+      for value in line:gmatch('%d+') do
+        preset_values[#preset_values + 1] = value
+      end
+      rtconfig_values_table[theme_name][section] = {[line:match('[%s%w]*')] = preset_values}
+    end
+    
+    if string.find(line, ';%[COLOR_PRESETS%]') then section = 'COLOR_PRESETS' ; rtconfig_values_table[theme_name][section] = {} end
+    if string.find(line, ';%[DEFAULT_LAYOUT%]') then section = 'DEFAULT_LAYOUT' ; rtconfig_values_table[theme_name][section] = {} end
+  end
+  file:close()
 end
