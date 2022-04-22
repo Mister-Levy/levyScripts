@@ -171,9 +171,9 @@ main_table = {
                                                                                                             }  } ,
                                            [ 'reapertheme' ] = {} } ,
         [ 'label' ]                    = { [ 'desc' ]        = 'Track name text' ,
-                                           [ 'attributes' ]  = { [ '[color]tcp.label.color' ]                            = 'Track name text colors - First four coordinates: foreground - Second four coordinates: background' ,
-                                                                    [ '[font]tcp.label.font' ]                              = 'Track name text font (first coordinate is font index, 1-8 user, 0=main, -1=volpan)' ,
-                                                                    [ '[margin]tcp.label.margin' ]                          = 'Track name text margins (l,t,r,b) + alignment (alignment is 0 for left, 0.5 for center, 1 for right)'  ,
+                                           [ 'attributes' ]  = {['[color]tcp.label.color' ]                            = 'Track name text colors - First four coordinates: foreground - Second four coordinates: background' ,
+                                                                ['[font]tcp.label.font' ]                              = 'Track name text font (first coordinate is font index, 1-8 user, 0=main, -1=volpan)' ,
+                                                                ['[margin]tcp.label.margin' ]                          = 'Track name text margins (l,t,r,b) + alignment (alignment is 0 for left, 0.5 for center, 1 for right)'  ,
                                                                   }  ,
                                            [ 'images' ]      = { [ 'tcp_namebg' ]                      = { [ 'desc' ]    =  '(bg):' ,
                                                                                                               [ 'actions' ] = {}

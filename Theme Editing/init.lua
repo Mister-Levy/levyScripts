@@ -13,11 +13,24 @@
 ]]--
 
 ctx = reaper.ImGui_CreateContext(script_name)
+font = reaper.ImGui_CreateFont( "C:\\Users\\damia\\Dropbox\\Reaper\\Scripts\\levyScripts\\Theme Editing\\Fonts\\Roboto\\Roboto-Regular.ttf", 14 )
+reaper.ImGui_AttachFont( ctx, font )
+--reaper.ImGui_PushFont(ctx, font)
+
 create_theme_list_table()
 read_rtconfig_values_to_table(string.match(r.GetLastColorThemeFile(), file_from_path))
 
+--------------------------------------------------
+--	Build Tables
+--------------------------------------------------
+
 panels_table = {}
 elements_table = {}
+layouts_table = {}
+selected_elements_table = {}
+sort_table = {}
+color_attributes_function_table = {}
+
 for panel in pairs(main_table) do
   panels_table[#panels_table + 1] = panel
   elements_table[panel] = {}
@@ -28,8 +41,14 @@ for panel in pairs(main_table) do
 end
 table.sort(panels_table)
 
+--------------------------------------------------
+--	Combo List Strings
+--------------------------------------------------
+
 combo_list_panels = ""
 combo_list_elements = {}
+combo_list_layouts = "Default\31"
+
 for panel = 1, #panels_table do
   combo_list_panels = combo_list_panels .. panels_table[panel] .. '\31'
   combo_list_elements[panels_table[panel]] = ""
@@ -37,4 +56,3 @@ for panel = 1, #panels_table do
     combo_list_elements[panels_table[panel]] = combo_list_elements[panels_table[panel]] .. elements_table[panels_table[panel]][element] .. '\31'
   end
 end
-selected_elements_table = {}

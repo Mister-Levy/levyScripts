@@ -34,10 +34,12 @@ function loop()
   local visible , open = r.ImGui_Begin(ctx, "Theme Editor", true, r.ImGui_WindowFlags_NoCollapse() | r.ImGui_WindowFlags_MenuBar())
 
   if visible then
-
+    window_width, window_height = r.ImGui_GetWindowSize(ctx)
+    
+    r.ImGui_PushFont(ctx, font)
     dofile(script_folder .. 'menu bar.lua')
     dofile(script_folder .. 'tab bar.lua')
-
+    r.ImGui_PopFont(ctx)
     r.ImGui_End(ctx)
   end
 
